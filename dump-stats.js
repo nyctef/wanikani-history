@@ -2,30 +2,28 @@ require('es6-promise').polyfill();
 var fs = require('fs');
 var path = require('path');
 
+function getNodeCallback(resolve, reject) {
+  return function nodeCallback(err, result) {
+    if (err) { return reject(err); }
+    return resolve(result);
+  }
+}
+
 function readdir(path, options) {
   return new Promise(function(resolve, reject) {
-    fs.readdir(path, options, function(err, files) {
-      if (err) { return reject(err); }
-      return resolve(files);
-    });
+    fs.readdir(path, options, getNodeCallback(resolve, reject));
   });
 }
 
 function readFile(path, options) {
   return new Promise(function(resolve, reject) {
-    fs.readFile(path, options, function(err, data) {
-      if (err) { return reject(err); }
-      return resolve(data);
-    });
+    fs.readFile(path, options, getNodeCallback(resolve, reject));
   });
 }
 
 function writeFile(path, data, options) {
   return new Promise(function(resolve, reject) {
-    fs.writeFile(path, data, options, function(err) {
-      if (err) { return reject(err); }
-      return resolve();
-    });
+    fs.writeFile(path, data, options, getNodeCallback(resolve, reject));
   });
 }
 
